@@ -1,24 +1,31 @@
-function ConnectToChatField(props) {
-  const { rooms, setRoom } = props;
-  function roomsHandler(room) {
-    console.log(room);
-    setRoom(room);
-  }
-  let roomsDOM=[];
-  for(let i=0;i<rooms.length;i++){
-  roomsDOM.push(
-      <button
-        key={i * rooms[i].number}
-        onClick={() => {
-          roomsHandler(i);
-        }}
-      >
-        {rooms[i].number}
-      </button>
-    );
-  };
+import { useState } from "react";
 
-  return <div className="connect-to-chat">{roomsDOM}</div>;
+function ConnectToChatField(props) {
+  const { getNewRoom, connectToRoom } = props;
+  const [chatNumber, setChatNumber] = useState("");
+  function changeNumber(value) {
+    setChatNumber(value);
+  }
+  function connect() {
+    connectToRoom(chatNumber);
+  }
+  return (
+    <div className="connect-to-chat">
+      <input
+        className="input connect-to-chat_input"
+        type="number"
+        maxLength={10}
+        value={chatNumber}
+        onChange={(e) => changeNumber(e.target.value)}
+      ></input>
+      <button className="connect-to-chat_connect-button" onClick={connect}>
+        Подключиться
+      </button>
+      <button className="connect-to-chat_new-button" onClick={getNewRoom}>
+        Создать
+      </button>
+    </div>
+  );
 }
 
 export default ConnectToChatField;

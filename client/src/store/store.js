@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
-import { send_message, change_username } from "../hooks/connectToChat";
 import saga from "./saga";
 
 function storeReducer(
@@ -13,13 +12,6 @@ function storeReducer(
   },
   action
 ) {
-  if (action.type == "sendMessage") {
-    return state;
-  }
-  if (action.type == "setNewMessages") {
-    console.log(action.messages);
-    return { ...state, messages: action.messages };
-  }
   if (action.type == "set_username") {
     return {
       ...state,
@@ -33,12 +25,17 @@ function storeReducer(
     };
   }
   if (action.type == "set_current_base_state") {
-    console.log(action);
     return {
       ...state,
       room: action.room,
       messages: action.messages,
       roomID: action.roomID,
+    };
+  }
+  if (action.type == "set_messages") {
+    return {
+      ...state,
+      messages: action.messages,
     };
   }
 

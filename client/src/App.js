@@ -7,18 +7,26 @@ import TextInput from "./component/TextInput";
 import "./App.css";
 
 function App(props) {
-  const { username, rooms, messages, setUsername, sendMessage, setRoom } =
-    props;
+  const {
+    username,
+    rooms,
+    messages,
+    setUsername,
+    sendMessage,
+    setRoom,
+    getNewRoom,
+    connectToRoom,
+  } = props;
 
   if (username == null) {
     return <LoginForm setUsername={setUsername}></LoginForm>;
   } else
     return (
       <div className="App">
-        <Chats></Chats>
+        <Chats rooms={rooms} setRoom={setRoom}></Chats>
         <ConnectToChatField
-          rooms={rooms}
-          setRoom={setRoom}
+          getNewRoom={getNewRoom}
+          connectToRoom={connectToRoom}
         ></ConnectToChatField>
         <MessageBox messages={messages}></MessageBox>
         <TextInput sendMessage={sendMessage}></TextInput>
@@ -45,6 +53,12 @@ function dispatchMap(dispatch) {
         type: "set_room",
         roomID: roomID,
       }),
+    getNewRoom: () => {
+      dispatch({ type: "get_new_room" });
+    },
+    connectToRoom: (roomNumber) => {
+      dispatch({ type: "join_to_room", roomNumber: roomNumber });
+    },
   };
 }
 
