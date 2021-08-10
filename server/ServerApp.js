@@ -1,4 +1,4 @@
-const { getRoom, getGuestRoom } = require("./handlers/getRoomHandlers");
+const { getRoom, getGuestRoom, addMessageToRoom } = require("./handlers/getRoomHandlers");
 
 const express = require("express");
 const path = require("path");
@@ -23,60 +23,33 @@ const io = require("socket.io")(server, {
   },
 });
 
-/* io.on("connection", (socket) => {
-  socket.username = "Anonymous";
-  let room = "room";
-
-  console.log("new user connected");
-  socket.on("send_message", function (msg) {
-    console.log("message", `${socket.username}:${msg}`);
-    let messageDate = new Date();
-    if (msg != "") {
-      messageArray.push({
-        username: socket.username,
-        message: msg,
-        date: `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()} ${messageDate.getHours()}:${messageDate.getMinutes()}`,
-      });
-    }
-    io.to(room).emit("newMessages", messageArray);
-  });
-  socket.on("change_username", function (name) {
-    console.log("username", name);
-    socket.username = name;
-    socket.join(room);
-    io.to(room).emit("newMessages", messageArray);
-  });
-}); */
-
-function getCurrentDate() {
-  let messageDate = new Date();
-  return `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()} ${messageDate.getHours()}:${messageDate.getMinutes()}`;
-}
-
-let guestRoom = getGuestRoom();
-
 io.on("connection", (socket) => {
-  /* socket.username = "Anonymous";
-  let rooms = [guestRoom];
-  console.log(rooms);
-  socket.join(rooms[0]);
-  socket.emit("accept_join_to_room", rooms[0].number, rooms[0].messages); */
-  let rooms = [guestRoom];
 
   const send_message = function (targetRoom) {
     io.to(targetRoom).emit("newMessages", targetRoom);
   };
 
-  const change_username = function (username) {
+
+  socket.on("change_username", (data) => {
+    let username=data.username;
+    let guestRoom=getGuestRoom();
+    console.log('username '+ username)
     socket.username = username;
-    console.log(rooms);
-    socket.join(rooms[0]);
-    socket.emit("join_to_room", rooms[0]);
-  };
-  /* room={number,messages,} */
-  socket.on("change_username", (username) => {
-    change_username(username);
+    socket.emit('accept_change_username',socket.username);
+    socket.join(guestRoom);
+    socket.emit("accept_join_to_room", guestRoom);
+    let room2=getRoom();
+    socket.join(room2);
+    socket.emit("accept_join_to_room", room2);
   });
+
+  socket.on('message_to_room',(room,username,message)=>{
+    let result=addMessageToRoom(room,username,message);
+    if(result.status==true){
+      console.log(roomNumber,message)
+/*       io.to(result.room).emit('new_message_on_room',roomNumber,message) */
+    }
+  })
 
   socket.on("send_message", (room, message) => {
     console.log(room, message);

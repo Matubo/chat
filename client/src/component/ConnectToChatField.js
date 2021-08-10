@@ -4,18 +4,19 @@ function ConnectToChatField(props) {
     console.log(room);
     setRoom(room);
   }
-  let roomsDOM = rooms.map((room, i) => {
-    return (
+  let roomsDOM=[];
+  for(let i=0;i<rooms.length;i++){
+  roomsDOM.push(
       <button
-        key={i * room.number}
+        key={i * rooms[i].number}
         onClick={() => {
           roomsHandler(i);
         }}
       >
-        {room.number}
+        {rooms[i].number}
       </button>
     );
-  });
+  };
 
   return <div className="connect-to-chat">{roomsDOM}</div>;
 }

@@ -37,12 +37,12 @@ function stateMap(store) {
 function dispatchMap(dispatch) {
   return {
     setUsername: (username) =>
-      dispatch({ type: "setUsername", username: username }),
+      dispatch({ type: "change_username", username: username }),
     sendMessage: (message) =>
-      dispatch({ type: "sendMessage", message: message }),
+      dispatch({ type: "send_message", message: message }),
     setRoom: (roomID) =>
       dispatch({
-        type: "setRoom",
+        type: "set_room",
         roomID: roomID,
       }),
   };

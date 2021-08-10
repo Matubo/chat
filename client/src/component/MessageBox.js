@@ -4,6 +4,7 @@ function MessageBox(props) {
   const { messages } = props;
 
   let DOM = messages.map((elem) => {
+    console.log(elem)
     return (
       <div className="message-box">
         <p className="message-box_username">{`${elem.username} `}</p>

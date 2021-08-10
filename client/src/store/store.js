@@ -20,19 +20,19 @@ function storeReducer(
     console.log(action.messages);
     return { ...state, messages: action.messages };
   }
-  if (action.type == "setNewUsername") {
+  if (action.type == "set_username") {
     return {
       ...state,
       username: action.username,
     };
   }
-  if (action.type == "setNewRooms") {
+  if (action.type == "set_new_rooms") {
     return {
       ...state,
       rooms: action.rooms,
     };
   }
-  if (action.type == "setCurrentRoom") {
+  if (action.type == "set_current_base_state") {
     console.log(action);
     return {
       ...state,
