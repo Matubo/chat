@@ -3,7 +3,7 @@ import "./MessageBox.css";
 function MessageBox(props) {
   const { messages } = props;
 
-  let DOM = messages.map((elem) => {
+  let messagesDOM = messages.map((elem) => {
     return (
       <div className="message-box">
         <p className="message-box_username">{`${elem.username} `}</p>
@@ -12,7 +12,7 @@ function MessageBox(props) {
       </div>
     );
   });
-  return <div className="list-of-messages">{DOM}</div>;
+  return <div className="list-of-messages">{messagesDOM}</div>;
 }
 
 export default MessageBox;

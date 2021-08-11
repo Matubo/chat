@@ -9,6 +9,7 @@ function storeReducer(
     room: null,
     roomID: null,
     messages: [],
+    authorized: false,
   },
   action
 ) {
@@ -16,15 +17,18 @@ function storeReducer(
     return {
       ...state,
       username: action.username,
+      authorized: true,
     };
   }
+
   if (action.type == "set_new_rooms") {
     return {
       ...state,
       rooms: action.rooms,
     };
   }
-  if (action.type == "set_current_base_state") {
+
+  if (action.type == "set_main_data") {
     return {
       ...state,
       room: action.room,
@@ -32,6 +36,7 @@ function storeReducer(
       roomID: action.roomID,
     };
   }
+
   if (action.type == "set_messages") {
     return {
       ...state,

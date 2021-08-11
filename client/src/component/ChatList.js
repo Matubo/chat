@@ -3,19 +3,18 @@ function Chats(props) {
   function roomsHandler(room) {
     setRoom(room);
   }
-  let roomsDOM = [];
-  for (let i = 0; i < rooms.length; i++) {
-    roomsDOM.push(
+  let roomsDOM = rooms.map((elem, index) => {
+    return (
       <button
-        key={i * rooms[i].number}
+        key={index * elem.number}
         onClick={() => {
-          roomsHandler(i);
+          roomsHandler(index);
         }}
       >
-        {rooms[i].number}
+        {elem.number}
       </button>
     );
-  }
+  });
 
   return <div className="chats">{roomsDOM}</div>;
 }

@@ -3,37 +3,31 @@ import {
   send_message_query,
   change_username_query,
   join_to_room_query,
-} from "../hooks/connectToChat";
+} from "../query/chatQuery";
 
 const currentRoomsState = (store) => store.rooms;
 const currentRoomState = (store) => store.room;
 const currentRoomIDState = (store) => store.roomID;
-const currentUsername = (store) => store.username;
-
+//обработчик запроса на изменение имени пользователя
 function change_username(username) {
   change_username_query(username);
 }
-
+//обработчик подтверждения смены имени пользователя
 function* accept_change_username(data) {
   let username = data.username;
-  yield put({ type: "set_username", username: username });
+  yield put({ type: "set_username", username: username, authorized: true });
 }
-
+//обработчик запроса на присоединение к комнате
 function join_to_room(data) {
   let roomNumber = data.roomNumber;
   join_to_room_query(roomNumber);
 }
-
+//обработчик подтверждения подключения к комнате
 function* accept_join_to_room(data) {
-  let room = data.room;
+  const { room } = data;
   let currentRooms = yield select(currentRoomsState);
-  let inRooms = false;
-  for (let i = 0; i < currentRooms.length; i++) {
-    if (currentRooms[i].number == room.number) {
-      inRooms = true;
-    }
-  }
-  if (!inRooms) {
+  let inStore = currentRooms.find((item) => item.number == room.number);
+  if (inStore == undefined) {
     currentRooms.push(room);
     let newRoomsArray = currentRooms.slice(0);
     yield put({ type: "set_new_rooms", rooms: newRoomsArray });
@@ -43,25 +37,22 @@ function* accept_join_to_room(data) {
     }
   }
 }
-
+//обработчик переключения комнаты
 function* set_room(data) {
-  let roomID = data.roomID;
+  const { roomID } = data;
   let currentRoomID = yield select(currentRoomIDState);
   if (currentRoomID != roomID) {
-    let currentRoomID = yield select(currentRoomIDState);
-    if (roomID != currentRoomID) {
-      let currentRooms = yield select(currentRoomsState);
-      let targetRoom = currentRooms[roomID];
-      yield put({
-        type: "set_current_base_state",
-        roomID: roomID,
-        messages: targetRoom.messages,
-        room: targetRoom.number,
-      });
-    }
+    let currentRooms = yield select(currentRoomsState);
+    let targetRoom = currentRooms[roomID];
+    yield put({
+      type: "set_main_data",
+      roomID: roomID,
+      messages: targetRoom.messages,
+      room: targetRoom.number,
+    });
   }
 }
-
+//обработчик прихода новых сообщений
 function* new_message_on_room(data) {
   let room = data.room;
   let rooms = yield select(currentRoomsState);
@@ -76,14 +67,13 @@ function* new_message_on_room(data) {
     }
   }
 }
-
+//обработчик отправки сообщения
 function* send_message(data) {
   let message = data.message;
   let room = yield select(currentRoomState);
-  let username = yield select(currentUsername);
-  send_message_query(room, username, message);
+  send_message_query(room, message);
 }
-
+//обработчик запроса новой комнаты
 function get_new_room() {
   join_to_room_query();
 }

@@ -1,14 +1,10 @@
-let roomArray = [];
-
-function getCurrentDate() {
-  let messageDate = new Date();
-  return `${messageDate.getDate()}.${messageDate.getMonth()}.${messageDate.getFullYear()} ${messageDate.getHours()}:${messageDate.getMinutes()}`;
-}
+const getInitMessages = require("./getInitMessages");
+const getCurrentDate = require("./getCurrentDate");
 
 class Room {
-  constructor(number) {
+  constructor(number, messages = []) {
     this.number = number;
-    this.messages = [];
+    this.messages = messages;
   }
   getNumber() {
     return this.number;
@@ -26,39 +22,25 @@ class Room {
     });
   }
 }
-
-let guestRoom = new Room(0);
-guestRoom.messages = [
-  {
-    message: "Вводите текст в поле внизу",
-    date: "10.05.2019 12.25",
-    username: "Admin",
-  },
-  {
-    message: "Кнопка отправки там же",
-    date: "10.05.2019 12.35",
-    username: "Admin",
-  },
-  {
-    message: "Переключайте сообщения тут",
-    date: "10.05.2019 12.45",
-    username: "Admin",
-  },
-];
-roomArray.push(guestRoom);
+//инициализация массива комнат в купе с гостевой
+let roomArray = (function () {
+  let guestRoomInit = new Room(0, getInitMessages());
+  return [guestRoomInit];
+})();
 
 function getGuestRoom() {
-  return guestRoom;
+  return roomArray[0];
 }
-
-function getRoom(roomNumber = "getNewRoom") {
-  if (roomNumber == "getNewRoom") {
+//запрос на получение/создание комнаты
+function getRoom(targetRoomNumber = "getNewRoom") {
+  if (targetRoomNumber == "getNewRoom") {
+    //учитывая что номера комнаты задаются по слишком простому принципу, можно было забирать сразу по индексу
     let newRoom = new Room(roomArray.length);
     roomArray.push(newRoom);
     return { status: true, room: newRoom };
   } else {
     for (let i = 0; i < roomArray.length; i++) {
-      if (roomArray[i].getNumber() == roomNumber) {
+      if (roomArray[i].getNumber() == targetRoomNumber) {
         return { status: true, room: roomArray[i] };
       }
     }
@@ -66,11 +48,14 @@ function getRoom(roomNumber = "getNewRoom") {
   }
 }
 
+//добавить сообщение в комнату
 const addMessageToRoom = function (room, username, messages) {
-  for (let i = 0; i < roomArray.length; i++) {
-    if (room == roomArray[i].getNumber()) {
-      roomArray[i].pushNewMessage(username, messages);
-      return { status: true, room: roomArray[i] };
+  if (room != 0 && messages != "") {
+    for (let i = 0; i < roomArray.length; i++) {
+      if (room == roomArray[i].getNumber()) {
+        roomArray[i].pushNewMessage(username, messages);
+        return { status: true, room: roomArray[i] };
+      }
     }
   }
   return { status: false };

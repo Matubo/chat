@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import LoginForm from "./component/LoginForm";
-import Chats from "./component/Chats";
+import Chats from "./component/ChatList";
 import ConnectToChatField from "./component/ConnectToChatField";
 import MessageBox from "./component/MessageBox";
 import TextInput from "./component/TextInput";
@@ -8,7 +8,7 @@ import "./App.css";
 
 function App(props) {
   const {
-    username,
+    authorized,
     rooms,
     messages,
     setUsername,
@@ -18,7 +18,7 @@ function App(props) {
     connectToRoom,
   } = props;
 
-  if (username == null) {
+  if (!authorized) {
     return <LoginForm setUsername={setUsername}></LoginForm>;
   } else
     return (
@@ -40,8 +40,10 @@ function stateMap(store) {
     room: store.room,
     rooms: store.rooms,
     messages: store.messages,
+    authorized: store.authorized,
   };
 }
+
 function dispatchMap(dispatch) {
   return {
     setUsername: (username) =>
