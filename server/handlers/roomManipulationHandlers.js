@@ -50,7 +50,7 @@ function getRoom(targetRoomNumber = "getNewRoom") {
 
 //добавить сообщение в комнату
 const addMessageToRoom = function (room, username, messages) {
-  if (room != 0 && messages != "") {
+  if (messages != "") {
     for (let i = 0; i < roomArray.length; i++) {
       if (room == roomArray[i].getNumber()) {
         roomArray[i].pushNewMessage(username, messages);
