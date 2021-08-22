@@ -1,8 +1,8 @@
 import io from "socket.io-client";
 import store from "../store/store";
 
-const SERVER_URL = "http://localhost:3001";
-const socket = io(SERVER_URL);
+/* const SERVER_URL = "http://localhost:3001"; */
+const socket = io();
 
 const send_message_query = function (room, message) {
   //отправка нового сообщения
